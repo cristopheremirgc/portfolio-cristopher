@@ -59,11 +59,11 @@ export const portfolioData: PortfolioData = {
 
   projects: [
     {
-      id: "nova-dashboard",
-      name: "Nova Dashboard",
-      tagline: "Panel SaaS para métricas de negocio.",
+      id: "conspiracion-moda",
+      name: "Conspiración Moda",
+      tagline: "Tienda en línea de moda sostenible.",
       description:
-        "Dashboard modular para visualizar KPIs, actividad reciente, ventas y rendimiento operativo usando una arquitectura frontend limpia y componentes reutilizables.",
+        "Plataforma de comercio electrónico para vender ropa sostenible con enfoque en la calidad y el impacto ambiental.",
       stack: ["Astro", "TypeScript", "CSS Grid", "REST API"],
       features: [
         "Widgets reutilizables.",
@@ -72,17 +72,17 @@ export const portfolioData: PortfolioData = {
         "Estados vacíos y loading preparados.",
       ],
       links: {
-        demo: "https://example.com/demo/nova-dashboard",
-        github: "https://github.com/tuusuario/nova-dashboard",
-        info: "https://example.com/projects/nova-dashboard",
+        demo: "https://example.com/demo/conspiracion-moda",
+        github: "https://github.com/tuusuario/conspiracion-moda",
+        info: "https://example.com/projects/conspiracion-moda",
       },
     },
     {
-      id: "taskflow",
-      name: "TaskFlow",
-      tagline: "Gestión visual de tareas tipo kanban.",
+      id: "Dracma",
+      name: "Dracma",
+      tagline: "Compra y venta de divisas bilingües.",
       description:
-        "Aplicación de productividad orientada a equipos pequeños. Incluye tableros, columnas, tarjetas, filtros y una experiencia responsive para desktop y móvil.",
+        "Aplicación web para la compra y venta de divisas, con soporte en español e inglés, diseñada para ofrecer una experiencia fluida y segura.",
       stack: ["Vue 3", "TypeScript", "Pinia", "CSS Modules"],
       features: [
         "Drag conceptual de tareas.",
@@ -91,28 +91,28 @@ export const portfolioData: PortfolioData = {
         "Componentes desacoplados.",
       ],
       links: {
-        demo: "https://example.com/demo/taskflow",
-        github: "https://github.com/tuusuario/taskflow",
-        info: "https://example.com/projects/taskflow",
+        demo: "https://example.com/demo/dracma",
+        github: "https://github.com/tuusuario/dracma",
+        info: "https://example.com/projects/dracma",
       },
     },
     {
-      id: "orbit-commerce",
-      name: "Orbit Commerce",
-      tagline: "Landing e-commerce rápida y optimizada.",
+      id: "QR3",
+      name: "ERP QR3",
+      tagline: "Sistema de gestión empresarial para TCDL de México.",
       description:
-        "Sitio de comercio con enfoque en velocidad, SEO, accesibilidad y conversión. Ideal para mostrar productos, beneficios, testimonios y llamadas a la acción.",
-      stack: ["Astro", "TypeScript", "Vanilla CSS", "Islands Architecture"],
+        "Plataforma ERP para la gestión de procesos internos de TCDL, incluyendo inventarios, ventas y reportes financieros y POS System de cotizaciones.",
+      stack: ["Laravel", "Vue 3", "Vite", "Lumen"],
       features: [
-        "HTML estático optimizado.",
-        "Componentes interactivos aislados.",
-        "CSS moderno sin framework pesado.",
-        "Buenas prácticas SEO.",
+        "Módulos desacoplados y reutilizables.",
+        "Optimización de performance inicial.",
+        "Componentes accesibles y responsivos.",
+        "Integración con APIs internas y externas.",
       ],
       links: {
-        demo: "https://example.com/demo/orbit-commerce",
-        github: "https://github.com/tuusuario/orbit-commerce",
-        info: "https://example.com/projects/orbit-commerce",
+        demo: "https://example.com/demo/qr3",
+        github: "https://github.com/tuusuario/qr3",
+        info: "https://example.com/projects/qr3",
       },
     },
   ],
