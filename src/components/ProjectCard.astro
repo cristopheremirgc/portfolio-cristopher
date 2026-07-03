@@ -1,0 +1,39 @@
+---
+import type { Project } from "../data/portfolio";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="project-card">
+  <div class="project-card__preview" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="project-card__content">
+    <p class="project-card__tagline">{project.tagline}</p>
+    <h3>{project.name}</h3>
+    <p>{project.description}</p>
+  </div>
+
+  <ul class="tag-list" aria-label={`Stack de ${project.name}`}>
+    {
+      project.stack.slice(0, 4).map((tech) => (
+        <li>{tech}</li>
+      ))
+    }
+  </ul>
+
+  <button
+    class="button button--ghost"
+    type="button"
+    data-project-open={project.id}
+  >
+    Abrir proyecto
+  </button>
+</article>

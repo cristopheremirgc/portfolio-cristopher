@@ -1,0 +1,44 @@
+---
+const dockItems = [
+  {
+    id: "about",
+    label: "About Me",
+    icon: "👤",
+  },
+  {
+    id: "projects",
+    label: "Proyectos",
+    icon: "▦",
+  },
+  {
+    id: "career",
+    label: "Carrera",
+    icon: "◷",
+  },
+  {
+    id: "contact",
+    label: "Contacto",
+    icon: "✦",
+  },
+];
+---
+
+<nav class="dock" aria-label="Dock de accesos rápidos">
+  <ul class="dock__list">
+    {
+      dockItems.map((item) => (
+        <li class="dock__list-item">
+          <button
+            class="dock__item"
+            type="button"
+            data-window-open={item.id}
+            aria-label={`Abrir ${item.label}`}
+          >
+            <span class="dock__icon" aria-hidden="true">{item.icon}</span>
+            <span class="dock__label">{item.label}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

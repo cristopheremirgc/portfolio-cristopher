@@ -1,0 +1,275 @@
+---
+import MacWindow from "./MacWindow.astro";
+import ProjectCard from "./ProjectCard.astro";
+import type { PortfolioData } from "../data/portfolio";
+
+interface Props {
+  portfolio: PortfolioData;
+}
+
+const { portfolio } = Astro.props;
+---
+
+<section class="window-manager" aria-label="Ventanas del portfolio">
+  <div class="desktop-hint" aria-hidden="true">
+    <span>Tip</span>
+    Arrastra las ventanas desde la barra superior.
+  </div>
+
+  <div class="window-layer" data-window-layer></div>
+
+  <template data-window-template="about" data-window-default="true">
+    <MacWindow id="about" title="About Me" width={740} height={540} x={76} y={78}>
+      <section class="window-content">
+        <p class="eyebrow">Portfolio / Perfil</p>
+
+        <div class="hero-block">
+          <div>
+            <h1>{portfolio.profile.name}</h1>
+            <p class="lead">{portfolio.profile.summary}</p>
+          </div>
+
+          <div class="profile-orb" aria-hidden="true">
+            <span>{portfolio.profile.name.charAt(0)}</span>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <article>
+            <span>Rol</span>
+            <strong>{portfolio.profile.role}</strong>
+          </article>
+
+          <article>
+            <span>Ubicación</span>
+            <strong>{portfolio.profile.location}</strong>
+          </article>
+
+          <article>
+            <span>Email</span>
+            <strong>{portfolio.profile.email}</strong>
+          </article>
+        </div>
+
+        <div class="section-block">
+          <h3>Enfoque</h3>
+
+          <ul class="check-list">
+            {
+              portfolio.profile.highlights.map((highlight) => (
+                <li>{highlight}</li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="window-actions">
+          <button class="button button--primary" type="button" data-window-open="projects">
+            Ver proyectos
+          </button>
+
+          <button class="button button--ghost" type="button" data-window-open="contact">
+            Contacto
+          </button>
+        </div>
+      </section>
+    </MacWindow>
+  </template>
+
+  <template data-window-template="projects">
+    <MacWindow id="projects" title="Proyectos" width={920} height={620} x={132} y={104}>
+      <section class="window-content">
+        <div class="section-heading">
+          <p class="eyebrow">Work / Selected projects</p>
+          <h2>Proyectos destacados</h2>
+          <p>
+            Cada tarjeta puede abrirse como una ventana independiente para simular una app dentro del escritorio.
+          </p>
+        </div>
+
+        <div class="project-grid">
+          {
+            portfolio.projects.map((project) => (
+              <ProjectCard project={project} />
+            ))
+          }
+        </div>
+      </section>
+    </MacWindow>
+  </template>
+
+  <template data-window-template="career">
+    <MacWindow id="career" title="Carrera" width={760} height={560} x={188} y={132}>
+      <section class="window-content">
+        <div class="section-heading">
+          <p class="eyebrow">Experience / Timeline</p>
+          <h2>Experiencia profesional</h2>
+          <p>
+            Resumen editable de experiencia, responsabilidades y logros.
+          </p>
+        </div>
+
+        <ol class="timeline">
+          {
+            portfolio.experience.map((item) => (
+              <li class="timeline__item">
+                <div class="timeline__marker" aria-hidden="true"></div>
+
+                <article class="timeline__card">
+                  <span>{item.period}</span>
+                  <h3>{item.role}</h3>
+                  <p class="timeline__company">{item.company}</p>
+                  <p>{item.description}</p>
+
+                  <ul class="check-list check-list--compact">
+                    {
+                      item.achievements.map((achievement) => (
+                        <li>{achievement}</li>
+                      ))
+                    }
+                  </ul>
+                </article>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+    </MacWindow>
+  </template>
+
+  <template data-window-template="contact">
+    <MacWindow id="contact" title="Más datos / Contacto" width={720} height={560} x={244} y={150}>
+      <section class="window-content">
+        <div class="section-heading">
+          <p class="eyebrow">Contact / Skills</p>
+          <h2>Skills, contacto y redes</h2>
+          <p>
+            Puedes reemplazar estos datos por tus enlaces reales, tecnologías favoritas y vías de contacto.
+          </p>
+        </div>
+
+        <div class="contact-layout">
+          <article class="contact-card">
+            <span>Email</span>
+            <a href={`mailto:${portfolio.profile.email}`}>{portfolio.profile.email}</a>
+          </article>
+
+          <article class="contact-card">
+            <span>Disponibilidad</span>
+            <strong>Abierto a proyectos web y colaboraciones.</strong>
+          </article>
+        </div>
+
+        <div class="section-block">
+          <h3>Skills</h3>
+
+          <ul class="skill-cloud">
+            {
+              portfolio.skills.map((skill) => (
+                <li>{skill}</li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="section-block">
+          <h3>Redes</h3>
+
+          <div class="social-list">
+            {
+              portfolio.socials.map((social) => (
+                <a href={social.href} target="_blank" rel="noreferrer">
+                  {social.label}
+                  <span aria-hidden="true">↗</span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+    </MacWindow>
+  </template>
+
+  {
+    portfolio.projects.map((project, index) => (
+      <template data-window-template={`project-${project.id}`}>
+        <MacWindow
+          id={`project-${project.id}`}
+          title={project.name}
+          width={820}
+          height={600}
+          x={120 + index * 36}
+          y={96 + index * 34}
+          class="project-window"
+        >
+          <section class="window-content project-detail">
+            <div class="project-detail__header">
+              <div>
+                <p class="eyebrow">Project / Case study</p>
+                <h2>{project.name}</h2>
+                <p class="lead">{project.description}</p>
+              </div>
+            </div>
+
+            <div class="browser-placeholder" aria-label={`Captura placeholder de ${project.name}`}>
+              <div class="browser-placeholder__bar">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+
+              <div class="browser-placeholder__canvas">
+                <div class="browser-placeholder__sidebar"></div>
+                <div class="browser-placeholder__content">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-detail__grid">
+              <article class="section-card">
+                <h3>Stack usado</h3>
+
+                <ul class="tag-list">
+                  {
+                    project.stack.map((tech) => (
+                      <li>{tech}</li>
+                    ))
+                  }
+                </ul>
+              </article>
+
+              <article class="section-card">
+                <h3>Features</h3>
+
+                <ul class="check-list check-list--compact">
+                  {
+                    project.features.map((feature) => (
+                      <li>{feature}</li>
+                    ))
+                  }
+                </ul>
+              </article>
+            </div>
+
+            <div class="window-actions">
+              <a class="button button--primary" href={project.links.demo} target="_blank" rel="noreferrer">
+                Demo
+              </a>
+
+              <a class="button button--ghost" href={project.links.github} target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+
+              <a class="button button--ghost" href={project.links.info} target="_blank" rel="noreferrer">
+                Más información
+              </a>
+            </div>
+          </section>
+        </MacWindow>
+      </template>
+    ))
+  }
+</section>

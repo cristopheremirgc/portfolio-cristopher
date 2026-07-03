@@ -1,0 +1,25 @@
+---
+import MenuBar from "./MenuBar.astro";
+import Dock from "./Dock.astro";
+import WindowManager from "./WindowManager.astro";
+import { portfolioData } from "../data/portfolio";
+---
+
+<div class="desktop-shell" data-desktop>
+  <a class="skip-link" href="#desktop-content">Saltar al contenido</a>
+
+  <MenuBar
+    name={portfolioData.profile.name}
+    role={portfolioData.profile.role}
+  />
+
+  <main id="desktop-content" class="desktop" aria-label="Escritorio del portfolio">
+    <WindowManager portfolio={portfolioData} />
+  </main>
+
+  <Dock />
+</div>
+
+<script>
+  import "../scripts/window-manager";
+</script>

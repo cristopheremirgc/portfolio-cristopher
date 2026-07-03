@@ -1,0 +1,73 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  width?: number;
+  height?: number;
+  x?: number;
+  y?: number;
+  class?: string;
+}
+
+const {
+  id,
+  title,
+  width = 720,
+  height = 520,
+  x = 96,
+  y = 88,
+  class: className = "",
+} = Astro.props;
+
+const labelledBy = `window-title-${id}`;
+const style = `--window-width: ${width}px; --window-height: ${height}px; --window-x: ${x}px; --window-y: ${y}px;`;
+---
+
+<article
+  class:list={["mac-window", className]}
+  data-window-id={id}
+  style={style}
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby={labelledBy}
+  tabindex="-1"
+>
+  <header class="mac-window__header" data-window-drag-handle>
+    <div class="mac-window__controls" aria-label="Controles de ventana">
+      <button
+        class="window-control window-control--close"
+        type="button"
+        data-window-close
+        data-window-control
+        aria-label={`Cerrar ${title}`}
+      >
+      </button>
+
+      <button
+        class="window-control window-control--minimize"
+        type="button"
+        data-window-minimize
+        data-window-control
+        aria-label={`Minimizar ${title}`}
+      >
+      </button>
+
+      <button
+        class="window-control window-control--maximize"
+        type="button"
+        data-window-maximize
+        data-window-control
+        aria-label={`Maximizar ${title}`}
+      >
+      </button>
+    </div>
+
+    <h2 id={labelledBy} class="mac-window__title">{title}</h2>
+
+    <div class="mac-window__header-spacer" aria-hidden="true"></div>
+  </header>
+
+  <div class="mac-window__body">
+    <slot />
+  </div>
+</article>
