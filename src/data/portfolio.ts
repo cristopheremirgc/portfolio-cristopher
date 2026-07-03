@@ -44,7 +44,7 @@ export type PortfolioData = {
 
 export const portfolioData: PortfolioData = {
   profile: {
-    name: "Cris Developer",
+    name: "Cristopher Costales",
     role: "Fullstack Developer",
     location: "México",
     email: "cris@example.com",
