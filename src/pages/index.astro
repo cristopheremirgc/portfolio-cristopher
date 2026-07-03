@@ -1,12 +1,18 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Desktop from "../components/Desktop.astro";
-import { portfolioData } from "../data/portfolio";
+import Layout from '../layouts/Layout.astro';
+import Ticket from '../components/Ticket.astro';
+import ShippingLabel from '../components/ShippingLabel.astro';
+import ExperienceMap from '../components/ExperienceMap.astro';
 ---
 
-<BaseLayout
-  title={`${portfolioData.profile.name} — Portfolio`}
-  description={`Portfolio interactivo de ${portfolioData.profile.name}, ${portfolioData.profile.role}.`}
->
-  <Desktop />
-</BaseLayout>
+<Layout>
+    <section>
+        <Ticket />
+    </section>
+    <section>
+        <ShippingLabel />
+    </section>
+    <section>
+        <ExperienceMap />
+    </section>
+</Layout>

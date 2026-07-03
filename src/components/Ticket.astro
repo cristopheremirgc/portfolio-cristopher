@@ -1,0 +1,417 @@
+---
+interface Props {
+  presenter?: string;
+  title?: string;
+  screen?: string | number;
+  row?: string | number;
+  seat?: string | number;
+  date?: string;
+  programTime?: string;
+  barcodeText?: string;
+  signature?: boolean;
+  note?: string;
+  printDelay?: number;
+  printDuration?: number;
+}
+
+const {
+  presenter = "LAYOVER PRESENTS",
+  title = "BLUE",
+  screen = "2",
+  row = "12",
+  seat = "30",
+  date = "23/09/08",
+  programTime = "13:00",
+  barcodeText = "CAN-WE-GO-BACK-TO-THAT-MOMENT-AGAIN",
+  signature = true,
+  note = "많이 기다렸죠 :~",
+  printDelay = 600,
+  printDuration = 2200,
+} = Astro.props;
+---
+
+<div class="ticket-print-wrap">
+  <div class="printer">
+
+    <div class="printer-body">
+      <div class="printer-light" id="light1"></div>
+      <div class="printer-light" id="light2"></div>
+      <div class="printer-light" id="light3"></div>
+      <div class="printer-slot"></div>
+    </div>
+
+    <div class="ticket-container" id="ticket-container">
+      <div class="ticket" id="ticket">
+
+        <div class="ticket-header">
+          <p class="presenter">{presenter}</p>
+          <h1 class="title">{title}</h1>
+          {note && <p class="handwritten-note">{note}</p>}
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="ticket-meta">
+          <div class="meta-group">
+            <span class="meta-label">SCREEN</span>
+            <span class="meta-value">{screen}</span>
+          </div>
+          <div class="meta-row-seat">
+            <div class="meta-group">
+              <span class="meta-label">ROW</span>
+              <span class="meta-value">{row}</span>
+            </div>
+            <div class="meta-group">
+              <span class="meta-label">SEAT</span>
+              <span class="meta-value">{seat}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="ticket-datetime">
+          <div class="meta-group">
+            <span class="meta-label">DATE</span>
+            <span class="meta-value small">{date}</span>
+          </div>
+          <div class="meta-group">
+            <span class="meta-label">PROGRAM TIME</span>
+            <span class="meta-value small">{programTime}</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="ticket-terms">
+          <p><strong>ADMIT ONE</strong> : Good this date only : No flash pictures, no recorders permitted in the theater.</p>
+          <p><strong>NO REFUNDS - NO EXCHANGES</strong></p>
+          <p><strong>TO BE RETAINED</strong></p>
+        </div>
+
+        {signature && (
+          <div class="signature-area">
+            <svg
+              class="signature-svg"
+              viewBox="0 0 300 100"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              stroke="black"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20,70 C40,20 80,80 120,40 C160,0 180,90 220,50 C240,30 260,60 280,45" />
+              <path d="M30,80 C60,30 100,75 150,55 C190,38 230,70 270,55" />
+              <path d="M50,90 C90,60 140,85 180,65 C210,50 250,75 285,60" />
+            </svg>
+            <span class="meta-label">SIGNATURE</span>
+          </div>
+        )}
+
+        <div class="divider thick"></div>
+
+        <div class="barcode-area">
+          <div class="barcode" id="barcode"></div>
+          <p class="barcode-text">{barcodeText}</p>
+        </div>
+
+      </div>
+
+      <div class="tear-line" id="tear-line"></div>
+    </div>
+
+    <div class="shadow-emerge" id="print-shadow"></div>
+  </div>
+</div>
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap");
+
+  .ticket-print-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem 3rem;
+    font-family: "IBM Plex Mono", "Courier New", monospace;
+  }
+
+  /* --- Impresora --- */
+  .printer {
+    width: 380px;
+    position: relative;
+  }
+
+  .printer-body {
+    background: #2a2a2a;
+    border-radius: 8px 8px 0 0;
+    height: 52px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .printer-light {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #444;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+
+  .printer-light.on {
+    background: #4ade80;
+    box-shadow: 0 0 8px #4ade80;
+  }
+
+  .printer-slot {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 4px;
+    background: #111;
+    border-radius: 2px 2px 0 0;
+  }
+
+  /* --- Contenedor animado --- */
+  .ticket-container {
+    width: 100%;
+    overflow: hidden;
+    height: 0;
+  }
+
+  /* --- Ticket --- */
+  .ticket {
+    background: #f5f3ee;
+    border: 1.5px solid #1a1a1a;
+    border-top: none;
+    width: 100%;
+    padding: 1.8rem 1.6rem 1.2rem;
+    position: relative;
+    transform: translateY(-100%);
+  }
+
+  .ticket::before,
+  .ticket::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #f5f3ee;
+    border-radius: 50%;
+    border: 1.5px solid #1a1a1a;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .ticket::before { left: -11px; }
+  .ticket::after  { right: -11px; }
+
+  /* --- Tear line --- */
+  .tear-line {
+    width: 100%;
+    height: 18px;
+    background: #f5f3ee;
+    border: 1.5px solid #1a1a1a;
+    border-top: none;
+    background-image: radial-gradient(circle, #1a1a1a 1.5px, transparent 1.5px);
+    background-size: 12px 100%;
+    background-position: 6px center;
+    background-repeat: repeat-x;
+    opacity: 0.35;
+  }
+
+  /* --- Sombra al finalizar --- */
+  .shadow-emerge {
+    height: 8px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent);
+    width: 92%;
+    margin: 0 auto;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  /* --- Cabecera --- */
+  .ticket-header { margin-bottom: 0.5rem; }
+
+  .presenter {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 0.2rem;
+    color: #1a1a1a;
+  }
+
+  .title {
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+    line-height: 1;
+    color: #1a1a1a;
+  }
+
+  .handwritten-note {
+    font-family: "Segoe Script", "Dancing Script", cursive;
+    font-size: 1rem;
+    color: #1a1a1a;
+    margin: 0.3rem 0 0 1rem;
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+
+  /* --- Divisores --- */
+  .divider {
+    border: none;
+    border-top: 1.5px solid #1a1a1a;
+    margin: 0.9rem 0;
+  }
+  .divider.thick { border-top-width: 2.5px; }
+
+  /* --- Meta info --- */
+  .ticket-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .meta-row-seat { display: flex; gap: 1.5rem; }
+  .meta-group { display: flex; flex-direction: column; }
+
+  .meta-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    margin-bottom: 0.1rem;
+  }
+
+  .meta-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #1a1a1a;
+  }
+  .meta-value.small { font-size: 1.4rem; }
+
+  /* --- Fecha y hora --- */
+  .ticket-datetime {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  /* --- Condiciones --- */
+  .ticket-terms {
+    font-size: 0.6rem;
+    line-height: 1.5;
+    color: #1a1a1a;
+  }
+  .ticket-terms p { margin: 0.1rem 0; }
+
+  /* --- Firma --- */
+  .signature-area { margin-top: 0.8rem; }
+  .signature-svg { width: 100%; height: 80px; display: block; }
+  .signature-area .meta-label { margin-top: 0.2rem; display: block; }
+
+  /* --- Barcode --- */
+  .barcode-area { margin-top: 0.8rem; text-align: center; }
+
+  .barcode {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 1.5px;
+    height: 50px;
+    padding: 0 0.2rem;
+  }
+
+  .bar { background: #1a1a1a; display: inline-block; align-self: flex-end; }
+
+  .barcode-text {
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+    margin: 0.4rem 0 0;
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+</style>
+
+<script define:vars={{ printDelay, printDuration }}>
+  document.addEventListener("DOMContentLoaded", () => {
+    const barcodeEl = document.getElementById("barcode");
+    const tc = document.getElementById("ticket-container");
+    const ticket = document.getElementById("ticket");
+    const printShadow = document.getElementById("print-shadow");
+    const lights = [
+      document.getElementById("light1"),
+      document.getElementById("light2"),
+      document.getElementById("light3"),
+    ];
+
+    // Generar barras del barcode
+    for (let i = 0; i < 60; i++) {
+      const b = document.createElement("div");
+      b.className = "bar";
+      b.style.height = (Math.random() > 0.3 ? 100 : 65) + "%";
+      b.style.width = (Math.random() > 0.5 ? 3 : 2) + "px";
+      barcodeEl.appendChild(b);
+    }
+
+    // Medir altura real del ticket
+    tc.style.height = "auto";
+    tc.style.overflow = "visible";
+    tc.style.visibility = "hidden";
+    const fullHeight = tc.scrollHeight;
+    tc.style.height = "0";
+    tc.style.overflow = "hidden";
+    tc.style.visibility = "visible";
+
+    let lightIndex = 0;
+    let lightInterval = null;
+
+    function animateLights() {
+      lights.forEach((l) => l.classList.remove("on"));
+      lights[lightIndex % lights.length].classList.add("on");
+      lightIndex++;
+    }
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function startPrint() {
+      lightInterval = setInterval(animateLights, 180);
+
+      const t0 = performance.now();
+
+      function step(now) {
+        const elapsed = now - t0;
+        const progress = Math.min(elapsed / printDuration, 1);
+        const eased = easeInOut(progress);
+
+        tc.style.height = eased * fullHeight + "px";
+        ticket.style.transform = `translateY(${-(1 - eased) * 100}%)`;
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          clearInterval(lightInterval);
+          lights.forEach((l) => l.classList.remove("on"));
+          tc.style.height = "auto";
+          ticket.style.transform = "translateY(0)";
+          printShadow.style.opacity = "1";
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    setTimeout(startPrint, printDelay);
+  });
+</script>

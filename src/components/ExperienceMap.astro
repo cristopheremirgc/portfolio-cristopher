@@ -1,0 +1,257 @@
+---
+// ExperienceMap.astro
+---
+
+<section id="exp-scroll">
+  <div id="exp-sticky">
+    <svg id="exp-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path id="drawn-path" fill="none" stroke="#111" stroke-width="1" />
+    </svg>
+
+    <div id="exp-nodes">
+
+      <div class="exp-node" id="n-deinsi">
+        <div class="dot"></div>
+        <div class="label top-left">
+          <strong>Deinsi</strong>
+          <span>Full stack developer</span>
+        </div>
+      </div>
+
+      <div class="exp-node" id="n-projects">
+        <div class="dot"></div>
+        <div class="label top-left">
+          <strong>Projects</strong>
+          <span>Some projects where I worked on</span>
+        </div>
+      </div>
+
+      <div class="exp-node" id="n-dracma">
+        <div class="dot"></div>
+        <div class="label bottom-left">
+          <strong>Dracma</strong>
+          <span>Exchange of currencies</span>
+        </div>
+      </div>
+
+      <div class="exp-node" id="n-medical">
+        <div class="dot"></div>
+        <div class="label top-left">
+          <strong>Medical Serve</strong>
+          <span>A Human resources from a hospital</span>
+        </div>
+      </div>
+
+      <div class="exp-node" id="n-conspiracion">
+        <div class="dot"></div>
+        <div class="label bottom-left">
+          <strong>Conspiración Moda</strong>
+          <span>An ERP and POS System from a fashion company</span>
+        </div>
+      </div>
+
+      <div class="exp-node" id="n-tcdl">
+        <div class="dot large"></div>
+        <div class="label top-right">
+          <strong>TCDL de Mexico</strong>
+          <span>Full stack developer</span>
+        </div>
+      </div>
+
+      <div class="exp-node" id="n-qr3">
+        <div class="dot"></div>
+        <div class="label top-right">
+          <strong>QR3</strong>
+          <span>An ERP and quotations system from an industrial plant</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* La sección es el scroll container — altura = cuánto dura la animación */
+  #exp-scroll {
+    position: relative;
+    height: 500vh; /* 5 pantallas = tiempo de animación */
+  }
+
+  /* El canvas queda fijo mientras el padre se scrollea */
+  #exp-sticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  #exp-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  #exp-nodes {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Nodos posicionados en % via JS */
+  .exp-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .exp-node.show { opacity: 1; }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #111;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .dot.large { width: 9px; height: 9px; }
+
+  .label {
+    position: absolute;
+    white-space: nowrap;
+    line-height: 1.35;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .label strong {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #111;
+  }
+
+  .label span {
+    display: block;
+    font-size: 0.75rem;
+    color: #555;
+    font-weight: 400;
+  }
+
+  .label.top-left   { bottom: 14px; right: 14px; text-align: right; }
+  .label.top-right  { bottom: 14px; left: 14px;  text-align: left;  }
+  .label.bottom-left  { top: 14px; right: 14px; text-align: right; }
+  .label.bottom-right { top: 14px; left: 14px;  text-align: left;  }
+
+  #n-deinsi strong   { font-size: 1.5rem; }
+  #n-projects strong { font-size: 1.25rem; }
+  #n-tcdl strong     { font-size: 1.25rem; }
+
+  @media (prefers-color-scheme: dark) {
+    #exp-sticky { background: #0a0a0a; }
+    .dot { background: #ddd; }
+    #drawn-path { stroke: #ddd; }
+    .label strong { color: #eee; }
+    .label span   { color: #888; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .exp-node { opacity: 1; transition: none; }
+  }
+</style>
+
+<script>
+(function () {
+  const scroll  = document.getElementById('exp-scroll');
+  const sticky  = document.getElementById('exp-sticky');
+  const svg     = document.getElementById('exp-svg');
+  const drawn   = document.getElementById('drawn-path');
+
+  // Waypoints en % del viewport (x, y)
+  // Mismo recorrido serpenteante que la imagen
+  const waypoints = [
+    { id: 'n-deinsi',       x: 26, y:  9 },
+    { id: 'n-projects',     x: 33, y: 24 },
+    { id: 'n-dracma',       x: 49, y: 41 },
+    { id: 'n-medical',      x: 18, y: 57 },
+    { id: 'n-conspiracion', x: 36, y: 87 },
+    { id: 'n-tcdl',         x: 72, y: 73 },
+    { id: 'n-qr3',          x: 82, y: 55 },
+  ];
+
+  function px(pct, total) { return pct / 100 * total; }
+
+  function buildPath(W, H) {
+    const pts = waypoints.map(w => ({ x: px(w.x, W), y: px(w.y, H) }));
+    let d = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 1; i < pts.length; i++) {
+      const p = pts[i - 1], c = pts[i];
+      const dy = (c.y - p.y) * 0.5;
+      const dx = (c.x - p.x) * 0.1;
+      d += ` C ${p.x + dx} ${p.y + dy}, ${c.x - dx} ${c.y - dy}, ${c.x} ${c.y}`;
+    }
+    return d;
+  }
+
+  function positionNodes(W, H) {
+    waypoints.forEach(w => {
+      const el = document.getElementById(w.id);
+      if (!el) return;
+      el.style.left = px(w.x, W) + 'px';
+      el.style.top  = px(w.y, H) + 'px';
+    });
+  }
+
+  let totalLen = 0;
+
+  function setup() {
+    const W = sticky.offsetWidth;
+    const H = sticky.offsetHeight;
+    const d = buildPath(W, H);
+    drawn.setAttribute('d', d);
+    totalLen = drawn.getTotalLength();
+    drawn.style.strokeDasharray  = totalLen;
+    drawn.style.strokeDashoffset = totalLen;
+    positionNodes(W, H);
+  }
+
+  function onScroll() {
+    if (!totalLen) return;
+
+    // progress 0→1 basado únicamente en el scroll dentro de #exp-scroll
+    const scrollTop    = window.scrollY;
+    const sectionTop   = scroll.offsetTop;
+    const scrollable   = scroll.offsetHeight - window.innerHeight;
+    const progress     = Math.max(0, Math.min(1, (scrollTop - sectionTop) / scrollable));
+
+    // Dibujar línea
+    drawn.style.strokeDashoffset = totalLen * (1 - progress);
+
+    // Revelar nodos cuando la línea los alcanza
+    waypoints.forEach((w, i) => {
+      const el = document.getElementById(w.id);
+      if (!el) return;
+      const threshold = i / (waypoints.length - 1);
+      el.classList.toggle('show', progress >= threshold - 0.02);
+    });
+  }
+
+  let resizeT;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => { setup(); onScroll(); }, 120);
+  }, { passive: true });
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  if (document.readyState === 'complete') { setup(); onScroll(); }
+  else window.addEventListener('load', () => { setup(); onScroll(); });
+})();
+</script>
